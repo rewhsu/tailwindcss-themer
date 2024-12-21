@@ -54,19 +54,23 @@ describe('customPropUtils', () => {
         toCustomPropName(['thing', '   has whitespace   '])
       ).toThrow()
     })
+
+    it('throws when __alpha is encountered', () => {
+      expect(() => toCustomPropName(['thing', '__alpha'])).toThrow()
+    })
   })
 
   describe('asCustomProp', () => {
     describe('colors', () => {
-      it('when given a number without an alpha, converts to custom prop with <alpha-value> as its alpha value', () => {
+      it('when given a number without an alpha, converts to custom prop for the main value and a custom prop as its alpha value', () => {
         expect(asCustomProp('#fff', ['this', 'that'])).toBe(
-          'rgb(var(--this-that) / <alpha-value>)'
+          'rgb(var(--this-that) / var(--this-that-__alpha, 1))'
         )
       })
 
-      it('when given a number with an alpha, converts to custom prop with the alpha value as its alpha value', () => {
+      it('when given a number with an alpha, converts to custom prop for the main value and a custom prop as its alpha value', () => {
         expect(asCustomProp('rgba(20, 0, 204, 0.72)', ['this', 'that'])).toBe(
-          'rgb(var(--this-that) / 0.72)'
+          'rgb(var(--this-that) / var(--this-that-__alpha, 1))'
         )
       })
     })

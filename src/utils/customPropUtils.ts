@@ -12,6 +12,32 @@ export const escape = (string?: string): string => {
     : string || ''
 }
 
+const ALPHA_CUSTOM_PROP_SUFFIX = '__alpha'
+
+/**
+ * @param pathSteps - the path to the value
+ * @param value - the value to convert to custom props
+ * @return the theme extension value resolved as custom props
+ */
+export const toCustomProps = (
+  pathSteps: string[],
+  value: string | number
+): Record<string, string> => {
+  const customPropName = toCustomPropName(pathSteps)
+  const customPropValue = toCustomPropValue(value)
+  if (isColor(value)) {
+    return {
+      [customPropName]: customPropValue,
+      [`${customPropName}-${ALPHA_CUSTOM_PROP_SUFFIX}`]:
+        getAlpha(value).toString()
+    }
+  } else {
+    return {
+      [customPropName]: customPropValue
+    }
+  }
+}
+
 /**
  * @param value - a custom prop value
  * @return the value converted to a string of its rgb components comma separated if it is a color else it returns the value unaltered
@@ -39,6 +65,11 @@ export const toCustomPropName = (valuePath: string[]): string => {
       )}"`
     )
   }
+  if (valuePath.includes(ALPHA_CUSTOM_PROP_SUFFIX)) {
+    throw new Error(
+      `Cannot have __alpha in any property in a theme config, found "${valuePath.join('.')}"`
+    )
+  }
   return escape(
     `--${valuePath
       .filter((step, i) => !(i == valuePath.length - 1 && step == 'DEFAULT'))
@@ -56,12 +87,8 @@ export const asCustomProp = (
   valuePath: string[]
 ): string => {
   const customPropName = toCustomPropName(valuePath)
-  // TODO: needs to handle the new alpha prop
   if (isColor(value)) {
-    const alpha = getAlpha(value)
-    return `rgb(var(${customPropName}) / ${
-      alpha == 1 ? '<alpha-value>' : alpha
-    })`
+    return `rgb(var(${customPropName}) / var(${customPropName}-${ALPHA_CUSTOM_PROP_SUFFIX}))`
   } else {
     return `var(${customPropName})`
   }

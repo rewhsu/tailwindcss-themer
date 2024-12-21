@@ -767,4 +767,72 @@ test.describe('colors', () => {
 
     await expect(page).toHaveScreenshot()
   })
+
+  test('supports switching between the same color with different opacities', async ({
+    page,
+    testRepos
+  }) => {
+    const { root } = await testRepos
+      .builder()
+      .withThemerConfig({
+        defaultTheme: {
+          extend: {
+            colors: {
+              primary: 'rgba(0, 0, 255, 0.9)'
+            }
+          }
+        },
+        themes: [
+          {
+            name: 'darkTheme',
+            extend: {
+              colors: {
+                primary: 'rgba(0, 0, 255, 0.1)'
+              }
+            }
+          }
+        ]
+      })
+      .open()
+
+    await expect(page).toHaveScreenshot()
+
+    await root.addClass('darkTheme')
+
+    await expect(page).toHaveScreenshot()
+  })
+
+  test('supports switching between different colors with different opacities', async ({
+    page,
+    testRepos
+  }) => {
+    const { root } = await testRepos
+      .builder()
+      .withThemerConfig({
+        defaultTheme: {
+          extend: {
+            colors: {
+              primary: 'rgba(255, 0, 0, 0.1)'
+            }
+          }
+        },
+        themes: [
+          {
+            name: 'darkTheme',
+            extend: {
+              colors: {
+                primary: 'rgba(0, 0, 255, 0.9)'
+              }
+            }
+          }
+        ]
+      })
+      .open()
+
+    await expect(page).toHaveScreenshot()
+
+    await root.addClass('darkTheme')
+
+    await expect(page).toHaveScreenshot()
+  })
 })
