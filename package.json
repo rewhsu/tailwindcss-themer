@@ -1,7 +1,7 @@
 {
-  "name": "tailwindcss-themer",
+  "name": "@rewhsu/tailwindcss-themer",
   "version": "0.0.0-development",
-  "author": "ryanclementshax",
+  "author": "rewhsu",
   "license": "MIT",
   "description": "An unopinionated, scalable, tailwindcss theming solution",
   "keywords": [
@@ -17,10 +17,10 @@
   "homepage": "https://github.com/RyanClementsHax/tailwindcss-themer#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/RyanClementsHax/tailwindcss-themer.git"
+    "url": "https://github.com/rewhsu/tailwindcss-themer.git"
   },
   "bugs": {
-    "url": "https://github.com/RyanClementsHax/tailwindcss-themer/issues"
+    "url": "https://github.com/rewhsu/tailwindcss-themer/issues"
   },
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
