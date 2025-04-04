@@ -451,6 +451,38 @@ describe('themeUtils', () => {
       })
     })
 
+    describe('colors', () => {
+      it('resolves color properties with a css var as its alpha', () => {
+        expect(
+          resolveThemeExtensionsAsTailwindExtension([
+            {
+              name: 'first',
+              extend: {
+                colors: {
+                  primary: 'orange'
+                }
+              }
+            },
+            {
+              name: 'second',
+              extend: {
+                colors: {
+                  secondary: 'purple'
+                }
+              }
+            }
+          ])
+        ).toEqual({
+          colors: {
+            primary:
+              'rgb(var(--colors-primary) / var(--colors-primary-__alpha, 1))',
+            secondary:
+              'rgb(var(--colors-secondary) / var(--colors-secondary-__alpha, 1))'
+          }
+        })
+      })
+    })
+
     describe('callbacks', () => {
       it('resolves non overlapping callbacks', () => {
         expect(
@@ -673,36 +705,6 @@ describe('themeUtils', () => {
           )
         ).toThrow()
       })
-
-      it('resolves color properties with opacity', () => {
-        expect(
-          resolveCallbacks(
-            resolveThemeExtensionsAsTailwindExtension([
-              {
-                name: 'first',
-                extend: {
-                  colors: {
-                    primary: 'orange'
-                  }
-                }
-              },
-              {
-                name: 'second',
-                extend: {
-                  colors: {
-                    secondary: 'purple'
-                  }
-                }
-              }
-            ])
-          )
-        ).toEqual({
-          colors: {
-            primary: 'rgb(var(--colors-primary) / <alpha-value>)',
-            secondary: 'rgb(var(--colors-secondary) / <alpha-value>)'
-          }
-        })
-      })
     })
   })
 
@@ -794,21 +796,6 @@ describe('themeUtils', () => {
       })
     })
 
-    it('resolves colors as rgb', () => {
-      expect(
-        resolveThemeExtensionAsCustomProps(
-          {
-            colors: {
-              primary: '#114611'
-            }
-          },
-          helpers
-        )
-      ).toEqual({
-        '--colors-primary': '17 70 17'
-      })
-    })
-
     it('drops DEFAULT keys from custom vars when resolving', () => {
       expect(
         resolveThemeExtensionAsCustomProps(
@@ -870,6 +857,40 @@ describe('themeUtils', () => {
           helpers
         )
       ).toEqual({})
+    })
+
+    describe('colors', () => {
+      it('resolves colors without an alpha as rgb with an alpha var of 1', () => {
+        expect(
+          resolveThemeExtensionAsCustomProps(
+            {
+              colors: {
+                primary: '#114611'
+              }
+            },
+            helpers
+          )
+        ).toEqual({
+          '--colors-primary': '17 70 17',
+          '--colors-primary-__alpha': '1'
+        })
+      })
+
+      it('resolves colors with an alpha as rgb with alpha separated into its own var', () => {
+        expect(
+          resolveThemeExtensionAsCustomProps(
+            {
+              colors: {
+                primary: '#1146117F'
+              }
+            },
+            helpers
+          )
+        ).toEqual({
+          '--colors-primary': '17 70 17',
+          '--colors-primary-__alpha': '0.4980392156862745'
+        })
+      })
     })
 
     describe('callbacks', () => {

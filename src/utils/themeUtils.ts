@@ -1,11 +1,7 @@
 import merge from 'lodash.merge'
 import mergeWith from 'lodash.mergewith'
 import { MergeWithCustomizer } from 'lodash'
-import {
-  asCustomProp,
-  toCustomPropName,
-  toCustomPropValue
-} from './customPropUtils'
+import { asCustomProp, toCustomProps } from './customPropUtils'
 import { ResolutionCallback, TailwindExtension } from '../config'
 import { ThemeConfig } from './optionsUtils'
 import { PluginAPI } from 'tailwindcss/types/config'
@@ -67,9 +63,7 @@ const resolveThemeExtensionAsCustomPropsRecursionHelper = (
     typeof themeExtensionValue === 'string' ||
     typeof themeExtensionValue === 'number'
   ) {
-    return {
-      [toCustomPropName(pathSteps)]: toCustomPropValue(themeExtensionValue)
-    }
+    return toCustomProps(pathSteps, themeExtensionValue)
   } else {
     throw new Error(
       `Unusable value found in config on path "${pathSteps.join('.')}"`

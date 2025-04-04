@@ -2,17 +2,17 @@ import { defineDriver } from '../../drivers'
 
 export default defineDriver({
   installCommand: {
-    command: ['npm', ['install']]
+    command: ['pnpm', ['install']]
   },
   getBuildCommand: ({ tailwindConfigFilePath, buildDirPath }) => ({
-    command: ['npm', ['run', 'build']],
+    command: ['pnpm', ['build']],
     env: {
       TAILWIND_CONFIG_PATH: tailwindConfigFilePath,
       BUILD_PATH: buildDirPath
     }
   }),
   getStartServerOptions: ({ port, buildDir }) => ({
-    command: ['npm', ['run', 'serve', '--', buildDir]],
+    command: ['pnpm', ['serve', buildDir]],
     env: {
       PORT: port.toFixed(0)
     },
